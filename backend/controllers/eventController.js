@@ -59,7 +59,9 @@ const joinEvent = async (req, res) => {
     req.params.id,
     { $addToSet: { participants: req.user._id } },
     { returnDocument: 'after' }
-  ).populate('participants', 'name email');
+  )
+    .populate('participants', 'name email')
+    .populate('createdBy', 'name'); // same shape as getEventById, so the page can replace it
   if (!event) return res.status(404).json({ message: 'Event not found' });
   res.json(event);
 };
@@ -71,7 +73,9 @@ const leaveEvent = async (req, res) => {
     req.params.id,
     { $pull: { participants: req.user._id } },
     { returnDocument: 'after' }
-  ).populate('participants', 'name email');
+  )
+    .populate('participants', 'name email')
+    .populate('createdBy', 'name');
   if (!event) return res.status(404).json({ message: 'Event not found' });
   res.json(event);
 };
