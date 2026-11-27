@@ -31,7 +31,7 @@ const updateWorkshop = async (req, res) => {
   const workshop = await Workshop.findByIdAndUpdate(
     req.params.id,
     { title, description, capacity },
-    { new: true, runValidators: true }
+    { returnDocument: 'after', runValidators: true }
   );
   if (!workshop) return res.status(404).json({ message: 'Workshop not found' });
   res.json(workshop);

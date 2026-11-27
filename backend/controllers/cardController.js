@@ -34,7 +34,7 @@ const updateCard = async (req, res) => {
   const card = await MemberCard.findByIdAndUpdate(
     req.params.id,
     { cardNumber, joinDate },
-    { new: true, runValidators: true }
+    { returnDocument: 'after', runValidators: true }
   );
   if (!card) return res.status(404).json({ message: 'Card not found' });
   res.json(card);

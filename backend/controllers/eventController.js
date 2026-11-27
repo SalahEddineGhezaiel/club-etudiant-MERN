@@ -37,7 +37,7 @@ const updateEvent = async (req, res) => {
   const event = await Event.findByIdAndUpdate(
     req.params.id,
     { title, description, date, location },
-    { new: true, runValidators: true } // return the updated document, and check the schema rules
+    { returnDocument: 'after', runValidators: true } // return the document AFTER the update, and check the schema rules
   );
   if (!event) return res.status(404).json({ message: 'Event not found' });
   res.json(event);
@@ -58,7 +58,7 @@ const joinEvent = async (req, res) => {
   const event = await Event.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { participants: req.user._id } },
-    { new: true }
+    { returnDocument: 'after' }
   ).populate('participants', 'name email');
   if (!event) return res.status(404).json({ message: 'Event not found' });
   res.json(event);
@@ -70,7 +70,7 @@ const leaveEvent = async (req, res) => {
   const event = await Event.findByIdAndUpdate(
     req.params.id,
     { $pull: { participants: req.user._id } },
-    { new: true }
+    { returnDocument: 'after' }
   ).populate('participants', 'name email');
   if (!event) return res.status(404).json({ message: 'Event not found' });
   res.json(event);
