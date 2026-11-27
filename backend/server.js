@@ -3,6 +3,10 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+const workshopRoutes = require('./routes/workshopRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const cardRoutes = require('./routes/cardRoutes');
 const { notFound, errorHandler } = require('./middlewares/error');
 
 const app = express();
@@ -15,6 +19,10 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/workshops', workshopRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/cards', cardRoutes);
 
 // These two must stay after all the routes
 app.use(notFound);

@@ -13,8 +13,8 @@ const errorHandler = (err, req, res, next) => {
   }
   // Unique index broken (email already used, second review...)
   if (err.code === 11000) {
-    const field = Object.keys(err.keyValue)[0];
-    return res.status(400).json({ message: `${field} already exists` });
+    const fields = Object.keys(err.keyValue).join(' and ');
+    return res.status(400).json({ message: `A record with this ${fields} already exists` });
   }
   // Badly formed id in the URL, e.g. /api/events/123
   if (err.name === 'CastError') {
