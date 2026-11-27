@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router';
+import { Routes, Route, Navigate, useLocation } from 'react-router';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
@@ -9,10 +9,13 @@ import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 
 export default function App() {
+  const location = useLocation();
+
   return (
     <>
       <Navbar />
-      <main className="container">
+      {/* key = the URL: a new page re-creates <main>, which replays its CSS entrance animation */}
+      <main className="container" key={location.pathname}>
         <Routes>
           <Route path="/" element={<Navigate to="/events" replace />} />
           <Route path="/login" element={<Login />} />

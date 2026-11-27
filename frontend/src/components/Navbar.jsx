@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/authSlice';
 
@@ -12,22 +12,23 @@ export default function Navbar() {
     navigate('/login');
   };
 
+  // NavLink adds the "active" class to the link of the current page
   return (
     <nav className="navbar">
       <Link to="/" className="brand">Student Club</Link>
       <div className="nav-links">
         {user ? (
           <>
-            <Link to="/events">Events</Link>
-            <Link to="/profile">My profile</Link>
-            {user.role === 'admin' && <Link to="/admin">Admin</Link>}
-            <span className="muted">Hi, {user.name}</span>
-            <button onClick={handleLogout}>Logout</button>
+            <NavLink to="/events">Events</NavLink>
+            <NavLink to="/profile">Profile</NavLink>
+            {user.role === 'admin' && <NavLink to="/admin">Admin</NavLink>}
+            <span className="nav-user">{user.name}</span>
+            <button className="plain" onClick={handleLogout}>Log out</button>
           </>
         ) : (
           <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
+            <NavLink to="/login">Log in</NavLink>
+            <NavLink to="/register">Join the club</NavLink>
           </>
         )}
       </div>

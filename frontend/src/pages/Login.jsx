@@ -30,13 +30,22 @@ export default function Login() {
   if (user) return <Navigate to="/events" replace />; // already logged in
 
   return (
-    <form className="form narrow" onSubmit={handleSubmit}>
-      <h1>Login</h1>
+    <form className="auth" onSubmit={handleSubmit}>
+      <h1>Welcome back</h1>
+      <p className="page-subtitle">Log in to see the club's events.</p>
       {error && <p className="error">{error}</p>}
-      <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} required />
-      <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
-      <button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
-      <p className="muted">No account? <Link to="/register">Register</Link></p>
+      <ul className="group">
+        <li className="field">
+          <label htmlFor="email"><span>Email</span></label>
+          <input id="email" name="email" type="email" autoComplete="email" placeholder="you@school.tn" value={form.email} onChange={handleChange} required />
+        </li>
+        <li className="field">
+          <label htmlFor="password"><span>Password</span></label>
+          <input id="password" name="password" type="password" autoComplete="current-password" placeholder="Required" value={form.password} onChange={handleChange} required />
+        </li>
+      </ul>
+      <button type="submit" className="block" disabled={loading}>{loading ? 'Logging in…' : 'Log in'}</button>
+      <p className="auth-switch">Not a member yet? <Link to="/register">Join the club</Link></p>
     </form>
   );
 }

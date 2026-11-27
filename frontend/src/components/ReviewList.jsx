@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import api from '../api/axios';
+import { Stars } from './Icon';
 
 // Reviews of one event: list, add (participants only, once), delete (author or admin)
 export default function ReviewList({ eventId, isParticipant }) {
@@ -45,34 +46,44 @@ export default function ReviewList({ eventId, isParticipant }) {
     <section>
       <h2>Reviews</h2>
       {error && <p className="error">{error}</p>}
-      {reviews.length === 0 && <p className="muted">No reviews yet.</p>}
-      <ul className="list">
+      <ul className="group">
+        {reviews.length === 0 && <li className="empty">No reviews yet.</li>}
         {reviews.map((r) => (
           <li key={r._id}>
-            <strong>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</strong> {r.comment}
-            <span className="muted"> · {r.user.name}</span>
+            <div className="row-main">
+              <Stars rating={r.rating} />
+              {r.comment && <div>{r.comment}</div>}
+              <div className="row-sub">{r.user.name}</div>
+            </div>
             {(r.user._id === user._id || user.role === 'admin') && (
-              <button className="danger small" onClick={() => handleDelete(r._id)}>Delete</button>
+              <button className="destructive" onClick={() => handleDelete(r._id)}>Delete</button>
             )}
           </li>
         ))}
+        {isParticipant && !alreadyReviewed && (
+          <li>
+            <form className="inline-form row-main" onSubmit={handleAdd}>
+              <select
+                aria-label="Rating"
+                value={form.rating}
+                onChange={(e) => setForm({ ...form, rating: Number(e.target.value) })}
+              >
+                {[5, 4, 3, 2, 1].map((n) => (
+                  <option key={n} value={n}>{n} / 5</option>
+                ))}
+              </select>
+              <input
+                aria-label="Your feedback"
+                placeholder="How was it?"
+                value={form.comment}
+                onChange={(e) => setForm({ ...form, comment: e.target.value })}
+              />
+              <button type="submit" className="tinted">Post</button>
+            </form>
+          </li>
+        )}
       </ul>
-
-      {isParticipant && !alreadyReviewed && (
-        <form className="row" onSubmit={handleAdd}>
-          <select value={form.rating} onChange={(e) => setForm({ ...form, rating: Number(e.target.value) })}>
-            {[5, 4, 3, 2, 1].map((n) => (
-              <option key={n} value={n}>{n} ★</option>
-            ))}
-          </select>
-          <input
-            placeholder="Your feedback"
-            value={form.comment}
-            onChange={(e) => setForm({ ...form, comment: e.target.value })}
-          />
-          <button type="submit">Post review</button>
-        </form>
-      )}
+      {!isParticipant && <p className="hint">Join the event to leave a review.</p>}
     </section>
   );
 }

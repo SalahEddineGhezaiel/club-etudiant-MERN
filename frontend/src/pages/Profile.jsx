@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import api from '../api/axios';
 import { formatDate } from '../utils/formatDate';
-import EventCard from '../components/EventCard';
+import EventRow from '../components/EventRow';
 
 export default function Profile() {
   const { user } = useSelector((state) => state.auth);
@@ -22,26 +22,31 @@ export default function Profile() {
 
   return (
     <div>
-      <h1>My profile</h1>
+      <h1>Profile</h1>
+      <p className="page-subtitle">{user.email} · {user.role === 'admin' ? 'Administrator' : 'Member'}</p>
       {error && <p className="error">{error}</p>}
 
-      <div className="card member-card">
-        <h3>{user.name}</h3>
-        <p className="muted">{user.email} · {user.role}</p>
-        {card && (
-          <p>
-            Card <strong>{card.cardNumber}</strong> · member since {formatDate(card.joinDate)}
-          </p>
-        )}
-      </div>
+      {card && (
+        <div className="member-card">
+          <div className="club">Student Club</div>
+          <div>
+            <div className="holder">{user.name}</div>
+            <div className="card-number">{card.cardNumber}</div>
+          </div>
+          <div className="since">Member since {formatDate(card.joinDate)}</div>
+        </div>
+      )}
 
       <h2>My events</h2>
-      {myEvents.length === 0 && <p className="muted">You haven't joined any event yet.</p>}
-      <div className="grid">
-        {myEvents.map((event) => (
-          <EventCard key={event._id} event={event} />
-        ))}
-      </div>
+      {myEvents.length === 0 ? (
+        <p className="secondary-text">You haven't joined any event yet.</p>
+      ) : (
+        <ul className="group">
+          {myEvents.map((event) => (
+            <EventRow key={event._id} event={event} />
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

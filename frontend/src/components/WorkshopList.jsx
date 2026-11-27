@@ -44,35 +44,41 @@ export default function WorkshopList({ eventId }) {
     <section>
       <h2>Workshops</h2>
       {error && <p className="error">{error}</p>}
-      {workshops.length === 0 && <p className="muted">No workshops yet.</p>}
-      <ul className="list">
+      <ul className="group">
+        {workshops.length === 0 && <li className="empty">No workshops for this event yet.</li>}
         {workshops.map((w) => (
           <li key={w._id}>
-            <strong>{w.title}</strong> <span className="muted">· {w.capacity} places</span>
+            <div className="row-main">
+              <div className="row-title">{w.title}</div>
+            </div>
+            <span className="row-trailing numeric">{w.capacity} places</span>
             {isAdmin && (
-              <button className="danger small" onClick={() => handleDelete(w._id)}>Delete</button>
+              <button className="destructive" onClick={() => handleDelete(w._id)}>Delete</button>
             )}
           </li>
         ))}
+        {isAdmin && (
+          <li>
+            <form className="inline-form row-main" onSubmit={handleAdd}>
+              <input
+                aria-label="Workshop title"
+                placeholder="New workshop title"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                required
+              />
+              <input
+                aria-label="Capacity"
+                type="number"
+                min="1"
+                value={form.capacity}
+                onChange={(e) => setForm({ ...form, capacity: e.target.value })}
+              />
+              <button type="submit" className="tinted">Add</button>
+            </form>
+          </li>
+        )}
       </ul>
-
-      {isAdmin && (
-        <form className="row" onSubmit={handleAdd}>
-          <input
-            placeholder="Workshop title"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-            required
-          />
-          <input
-            type="number"
-            min="1"
-            value={form.capacity}
-            onChange={(e) => setForm({ ...form, capacity: e.target.value })}
-          />
-          <button type="submit">Add workshop</button>
-        </form>
-      )}
     </section>
   );
 }

@@ -11,6 +11,7 @@ export default function EventForm({ initialEvent, onSubmit, onCancel }) {
       : emptyForm
   );
   const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
   // One handler for every input, thanks to the "name" attribute
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,26 +19,45 @@ export default function EventForm({ initialEvent, onSubmit, onCancel }) {
   const handleSubmit = async (e) => {
     e.preventDefault(); // stop the browser from reloading the page
     setError('');
+    setSaving(true);
     try {
       const { title, description, date, location } = form;
       await onSubmit({ title, description, date, location });
       if (!initialEvent) setForm(emptyForm);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <h3>{initialEvent ? 'Edit event' : 'New event'}</h3>
+    <form onSubmit={handleSubmit}>
+      <h2>{initialEvent ? `Edit “${initialEvent.title}”` : 'New event'}</h2>
       {error && <p className="error">{error}</p>}
-      <input name="title" placeholder="Title" value={form.title} onChange={handleChange} required />
-      <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} />
-      <input name="date" type="date" value={form.date} onChange={handleChange} required />
-      <input name="location" placeholder="Location" value={form.location} onChange={handleChange} />
-      <div className="row">
-        <button type="submit">{initialEvent ? 'Save' : 'Create'}</button>
-        {onCancel && <button type="button" className="secondary" onClick={onCancel}>Cancel</button>}
+      <ul className="group">
+        <li className="field">
+          <label htmlFor="ev-title"><span>Title</span></label>
+          <input id="ev-title" name="title" placeholder="Spring hackathon" value={form.title} onChange={handleChange} required />
+        </li>
+        <li className="field">
+          <label htmlFor="ev-date"><span>Date</span></label>
+          <input id="ev-date" name="date" type="date" value={form.date} onChange={handleChange} required />
+        </li>
+        <li className="field">
+          <label htmlFor="ev-location"><span>Location</span></label>
+          <input id="ev-location" name="location" placeholder="Amphitheatre A" value={form.location} onChange={handleChange} />
+        </li>
+        <li className="field">
+          <label htmlFor="ev-description"><span>Description</span></label>
+          <textarea id="ev-description" name="description" placeholder="What will happen?" value={form.description} onChange={handleChange} />
+        </li>
+      </ul>
+      <div className="form-actions">
+        <button type="submit" disabled={saving}>
+          {saving ? 'Saving…' : initialEvent ? 'Save changes' : 'Create event'}
+        </button>
+        {onCancel && <button type="button" className="tinted" onClick={onCancel}>Cancel</button>}
       </div>
     </form>
   );
