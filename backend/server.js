@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
+const { notFound, errorHandler } = require('./middlewares/error');
 
 const app = express();
 
@@ -11,6 +13,12 @@ app.use(express.json()); // parses JSON request bodies into req.body
 app.get('/', (req, res) => {
   res.json({ message: 'Student Club API is running' });
 });
+
+app.use('/api/auth', authRoutes);
+
+// These two must stay after all the routes
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
